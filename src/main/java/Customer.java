@@ -33,15 +33,17 @@ public class Customer {
         int numItems = 0;
 
         // TODO: Calculate the total number of items
-        numItems = items.size();
+        numItems = items.stream().mapToInt(Purchase::getAmount).sum();
         return numItems;
     }
 
     public double calculateTotalBill() {
         double totalBill = 0.0;
-
         // TODO: Calculate the total cost of all items
-
+        for (Purchase p: items
+             ) {
+            totalBill += p.getProduct().getPrice() * p.getAmount();
+        }
         return totalBill;
     }
 
