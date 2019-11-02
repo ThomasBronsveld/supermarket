@@ -6,8 +6,8 @@
 import utils.XMLParser;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import java.util.Collection;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 public class Product {
@@ -23,6 +23,21 @@ public class Product {
 
     // TODO implement relevant overrides and/or local classes to be able to
     //  print Products and/or use them in sets, maps and/or priority queues.
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof Product))
+            return false;
+        if (obj == this)
+            return true;
+        return this.getCode() == ((Product) obj).getCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code);
+    }
 
     public String getCode() {
         return code;
