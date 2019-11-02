@@ -70,7 +70,8 @@ public abstract class Cashier {
      */
     public void add(Customer customer) {
         // TODO add the customer to the queue of the cashier (if check-out is required)
-
+        waitingQueue.add(customer);
+        maxQueueLength += 1;
     }
 
     // TODO implement relevant overrides and/or local classes to be able to
