@@ -23,13 +23,15 @@ public class Supermarket {
         this.setOpenTime(openTime);
         this.setClosingTime(closingTime);
         this.cashiers = new ArrayList<>();
-        // TODO create empty data structures for products and customers
+
+        this.products = new HashSet<>();
+        this.customers = new ArrayList<>();
     }
 
     public int getTotalNumberOfItems() {
         int totalItems = 0;
 
-        // TODO: calculate the total number of shopped items
+        totalItems = products.size();
 
         return totalItems;
     }
@@ -56,6 +58,8 @@ public class Supermarket {
         double totalRevenue = 0.0;
         // TODO: display the calculated revenues and most bought products.
         // TODO: calculate the total revenue.
+        System.out.println("revenues: " + revenues);
+        System.out.println("populars: " + populars);
 
         System.out.printf("\nTotal Revenue=%.2f\n", totalRevenue);
     }
@@ -88,9 +92,12 @@ public class Supermarket {
      */
     public Map<String, Double> revenueByZipCode() {
         Map<String, Double> revenues = null;
-
+        for (int i = 0; i >= customers.size(); i++){
+           revenues.put(i, customers.get(i).getItems().)
+        }
         // TODO create an appropriate data structure for the revenues
         //  and calculate its contents
+
 
         return revenues;
     }

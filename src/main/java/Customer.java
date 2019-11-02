@@ -20,7 +20,9 @@ public class Customer {
     public Customer(LocalTime queuedAt, String zipCode) {
         this.queuedAt = queuedAt;
         this.zipCode = zipCode;
+
         // TODO: initialize an empty set of purchased items
+        this.items = new HashSet<>();
     }
 
     /**
@@ -31,7 +33,7 @@ public class Customer {
         int numItems = 0;
 
         // TODO: Calculate the total number of items
-
+        numItems = items.size();
         return numItems;
     }
 
