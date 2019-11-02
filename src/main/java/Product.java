@@ -1,16 +1,18 @@
 /**
  * Supermarket Customer check-out and Cashier simulation
- * @author  hbo-ict@hva.nl
+ *
+ * @author hbo-ict@hva.nl
  */
 
 import utils.XMLParser;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
-public class Product {
+public class Product implements Comparable {
     private String code;            // a unique product code; identical codes designate identical products
     private String description;     // the product description, useful for reporting
     private double price;           // the product's price
@@ -37,6 +39,13 @@ public class Product {
     @Override
     public int hashCode() {
         return Objects.hash(code);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (this.hashCode() > o.hashCode()) return 1;
+        if (this.hashCode() < o.hashCode()) return -1;
+        else return 0;
     }
 
     public String getCode() {
