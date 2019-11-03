@@ -44,22 +44,26 @@ public class FIFOCashier extends Cashier {
         if(this.waitingQueue.size() == 0 && this.servingCustomer == null){
             amount = 0;
         }
-
         return amount;
     }
 
     @Override
     public void doTheWorkUntil(LocalTime targetTime) {
-        this.setCurrentTime(targetTime);
 
         if(this.servingCustomer == null && this.waitingQueue.size() == 0){
-            this.setTotalIdleTime(this.getTotalIdleTime() + targetTime.getSecond());
+            this.setTotalIdleTime(this.getTotalIdleTime() + (int) ChronoUnit.SECONDS.between(this.getCurrentTime(), targetTime));
         }
 
         if(this.waitingQueue.size() != 0 && this.servingCustomer == null){
             this.servingCustomer = this.waitingQueue.peek();
+            this.setCurrentTime(this.getCurrentTime().plusSeconds(this.expectedCheckOutTime(this.servingCustomer.getNumberOfItems())));
             this.waitingQueue.remove(this.waitingQueue.peek());
-        }
+            this.servingCustomer = null;
 
+            if(this.waitingQueue.size() == 0){
+                this.setTotalIdleTime(this.getTotalIdleTime() + (int) ChronoUnit.SECONDS.between(this.getCurrentTime(), targetTime));
+            }
+        }
+        this.setCurrentTime(targetTime);
     }
 }
