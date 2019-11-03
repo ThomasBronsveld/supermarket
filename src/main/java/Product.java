@@ -73,8 +73,11 @@ public class Product implements Comparable {
             xmlParser.nextTag();
             if (products != null) {
                 Product product;
-                while ((product = importFromXML(xmlParser)) != null) {
-                    products.add(product);
+                while ((product = importFromXML(xmlParser)) != null) { //BREAKPOINT HIERZO
+                    if (!products.contains(product.code))
+                        products.add(product);
+//                    System.out.println(product.code);
+//                    System.out.println(products.contains(product.code));
                 }
             }
 
