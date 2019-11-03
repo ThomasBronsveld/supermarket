@@ -33,7 +33,7 @@ public class Product implements Comparable {
             return false;
         if (obj == this)
             return true;
-        return this.getCode() == ((Product) obj).getCode();
+        return this.getCode().equals(((Product) obj).getCode());
     }
 
     @Override
@@ -73,11 +73,9 @@ public class Product implements Comparable {
             xmlParser.nextTag();
             if (products != null) {
                 Product product;
-                while ((product = importFromXML(xmlParser)) != null) { //BREAKPOINT HIERZO
+                while ((product = importFromXML(xmlParser)) != null) {
                     if (!products.contains(product.code))
                         products.add(product);
-//                    System.out.println(product.code);
-//                    System.out.println(products.contains(product.code));
                 }
             }
 
