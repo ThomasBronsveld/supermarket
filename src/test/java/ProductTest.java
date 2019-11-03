@@ -22,6 +22,8 @@ class ProductTest {
         Product p1 = new Product("ABC", "XXX", 1.0);
         Product p2 = new Product("ABC", "YYY", 2.0);
         Product p3 = new Product("DEF", "XXX", 1.0);
+        System.out.println(p1);
+        System.out.println(p2);
         assertEquals(p1, p2,
                 "Products with identical code should be equal");
         assertEquals(p1.hashCode(), p2.hashCode(),

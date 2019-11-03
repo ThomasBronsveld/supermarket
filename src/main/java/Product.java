@@ -117,4 +117,9 @@ public class Product implements Comparable {
         xmlWriter.writeAttribute("price", String.format(Locale.US, "%.2f", this.price));
         xmlWriter.writeEndElement();
     }
+
+    @Override
+    public String toString() {
+        return this.getDescription();
+    }
 }

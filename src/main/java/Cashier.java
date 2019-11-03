@@ -4,7 +4,10 @@
  */
 
 import java.time.LocalTime;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
 
 public abstract class Cashier {
 
@@ -17,6 +20,7 @@ public abstract class Cashier {
 
     protected Cashier(String name) {
         this.name = name;
+        waitingQueue = new LinkedList<>();
     }
 
     /**

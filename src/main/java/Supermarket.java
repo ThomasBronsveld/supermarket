@@ -8,6 +8,8 @@ import utils.XMLWriter;
 import javax.xml.stream.XMLStreamConstants;
 import java.time.LocalTime;
 import java.util.*;
+import static java.util.stream.Collectors.toMap;
+import java.util.Map;
 
 public class Supermarket {
     public String name;                 // name of the case for reporting purposes
@@ -94,14 +96,19 @@ public class Supermarket {
      * @return
      */
     public Map<String, Double> revenueByZipCode() {
-        Map<String, Double> revenues = null;
-//        for (int i = 0; i >= customers.size(); i++){
-//           revenues.put(i, customers.get(i).getItems().)
-//        }
-        // TODO create an appropriate data structure for the revenues
-        //  and calculate its contents
+        Map<String, Double> revenues = new HashMap<>();
+        for (Customer c : customers) {
+            String code = c.getZipCode();
+            double price = revenues.containsKey(code) ? revenues.get(code) : 0;
+            price += c.calculateTotalBill();
+            revenues.put(code, price);
+        }
 
-
+        revenues = revenues.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                        .collect(toMap(
+                                Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+                                LinkedHashMap::new)
+                        );
         return revenues;
     }
 
@@ -112,13 +119,36 @@ public class Supermarket {
      * @return
      */
     public Map<String, Product> mostBoughtProductByZipCode() {
-        Map<String, Product> mostBought = null;
+        Map<String, Product> mostBought = new HashMap<>();
 
         // TODO create an appropriate data structure for the mostBought
         //  and calculate its contents
+        for (Customer c: customers
+             ) {
 
+            Purchase temp = null;
+            for (Purchase p: c.getItems()
+                 ) {
+
+                if(temp == null){
+                    p.getAmount();
+                    System.out.println(p.getProduct().getDescription());
+                    temp = p;
+                    System.out.println("Dit is temp na null: " + p.getProduct().getDescription());
+                    continue;
+                }
+                if(p.getAmount() > temp.getAmount()){
+                    System.out.println(temp.getAmount());
+                    System.out.println(p.getAmount());
+                    temp = p;
+                }
+            }
+            mostBought.put(c.getZipCode(), temp.getProduct());
+        }
+        System.out.println(mostBought);
         return mostBought;
     }
+
 
     /**
      * simulate the cashiers while handling all customers that enter their queues
