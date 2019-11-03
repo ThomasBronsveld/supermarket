@@ -31,7 +31,10 @@ public class Supermarket {
     public int getTotalNumberOfItems() {
         int totalItems = 0;
 
-        totalItems = products.size();
+        for (Customer c: customers
+             ) {
+            totalItems += c.getNumberOfItems();
+        }
 
         return totalItems;
     }
@@ -92,9 +95,9 @@ public class Supermarket {
      */
     public Map<String, Double> revenueByZipCode() {
         Map<String, Double> revenues = null;
-        for (int i = 0; i >= customers.size(); i++){
-           revenues.put(i, customers.get(i).getItems().)
-        }
+//        for (int i = 0; i >= customers.size(); i++){
+//           revenues.put(i, customers.get(i).getItems().)
+//        }
         // TODO create an appropriate data structure for the revenues
         //  and calculate its contents
 
