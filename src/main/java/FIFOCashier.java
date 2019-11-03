@@ -7,6 +7,8 @@ import java.time.temporal.ChronoUnit;
  * @Author Thomas Bronsveld <Thomas.Bronsveld@hva.nl>
  */
 public class FIFOCashier extends Cashier {
+    private Customer servingCustomer;
+
     public FIFOCashier(String name) {
         super(name);
     }
@@ -23,32 +25,41 @@ public class FIFOCashier extends Cashier {
     @Override
     public int expectedWaitingTime(Customer customer) {
         int amount = 0;
+        //There is a serving customer & the queue is not 0.
         if (this.waitingQueue.size() != 0) {
             for (Customer c : waitingQueue
             ) {
                 amount += expectedCheckOutTime(c.getNumberOfItems());
             }
+            if(this.servingCustomer != null){
+                amount += this.expectedCheckOutTime(this.servingCustomer.getNumberOfItems()) - this.getCurrentTime().getSecond();
+            }
         }
+        //This condition goes if both the waiting queue is 0 and the cashier is serving a customer.
+        if(this.waitingQueue.size() == 0 && this.servingCustomer != null){
+            amount = this.expectedCheckOutTime(this.servingCustomer.getNumberOfItems()) - this.getCurrentTime().getSecond();
+        }
+
+        //Werkt
+        if(this.waitingQueue.size() == 0 && this.servingCustomer == null){
+            amount = 0;
+        }
+
         return amount;
     }
 
     @Override
     public void doTheWorkUntil(LocalTime targetTime) {
-        long between = ChronoUnit.SECONDS.between(this.currentTime, targetTime);
+        this.setCurrentTime(targetTime);
 
-//        long end = System.currentTimeMillis() + (between * 1000);
+        if(this.servingCustomer == null && this.waitingQueue.size() == 0){
+            this.setTotalIdleTime(this.getTotalIdleTime() + targetTime.getSecond());
+        }
 
-//        while (System.currentTimeMillis() < end) {
-//            if (this.waitingQueue.size() == 0) {
-//                this.setTotalIdleTime((int) (end - System.currentTimeMillis()) / 1000);
-//                this.setCurrentTime(this.currentTime.plusSeconds(between));
-//                break;
-//            }
-//
-//            int time = this.expectedWaitingTime(this.waitingQueue.element());
-//            this.setCurrentTime(this.currentTime.plusSeconds(time));
-//            this.waitingQueue.remove(this.waitingQueue.element());
-//        }
+        if(this.waitingQueue.size() != 0 && this.servingCustomer == null){
+            this.servingCustomer = this.waitingQueue.peek();
+            this.waitingQueue.remove(this.waitingQueue.peek());
+        }
 
     }
 }
