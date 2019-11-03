@@ -1,14 +1,19 @@
 /**
  * Supermarket Customer check-out and Cashier simulation
- * @author  hbo-ict@hva.nl
+ *
+ * @author hbo-ict@hva.nl
  */
+
 import utils.SLF4J;
 import utils.XMLParser;
 import utils.XMLWriter;
+
 import javax.xml.stream.XMLStreamConstants;
 import java.time.LocalTime;
 import java.util.*;
+
 import static java.util.stream.Collectors.toMap;
+
 import java.util.Map;
 
 public class Supermarket {
@@ -33,8 +38,8 @@ public class Supermarket {
     public int getTotalNumberOfItems() {
         int totalItems = 0;
 
-        for (Customer c: customers
-             ) {
+        for (Customer c : customers
+        ) {
             totalItems += c.getNumberOfItems();
         }
 
@@ -105,10 +110,10 @@ public class Supermarket {
         }
 
         revenues = revenues.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                        .collect(toMap(
-                                Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
-                                LinkedHashMap::new)
-                        );
+                .collect(toMap(
+                        Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+                        LinkedHashMap::new)
+                );
         return revenues;
     }
 
@@ -121,32 +126,44 @@ public class Supermarket {
     public Map<String, Product> mostBoughtProductByZipCode() {
         Map<String, Product> mostBought = new HashMap<>();
 
-        // TODO create an appropriate data structure for the mostBought
-        //  and calculate its contents
-        for (Customer c: customers
-             ) {
-
-            Purchase temp = null;
-            for (Purchase p: c.getItems()
-                 ) {
-
-                if(temp == null){
-                    p.getAmount();
-                    System.out.println(p.getProduct().getDescription());
-                    temp = p;
-                    System.out.println("Dit is temp na null: " + p.getProduct().getDescription());
-                    continue;
-                }
-                if(p.getAmount() > temp.getAmount()){
-                    System.out.println(temp.getAmount());
-                    System.out.println(p.getAmount());
-                    temp = p;
-                }
+        Map<String, LinkedList<Purchase>> purchasesPerCustomer = new HashMap<>();
+        Map<Product, Integer> test = new HashMap<>();
+        for (Customer c : customers
+        ) {
+            if (!purchasesPerCustomer.containsKey(c.getZipCode())) {
+                LinkedList<Purchase> list = new LinkedList<>();
+                purchasesPerCustomer.put(c.getZipCode(), list);
             }
-            mostBought.put(c.getZipCode(), temp.getProduct());
+            purchasesPerCustomer.get(c.getZipCode()).addAll(c.getItems());
         }
-        System.out.println(mostBought);
+
+        for (Map.Entry<String, LinkedList<Purchase>> blah : purchasesPerCustomer.entrySet()) {
+            blah.getValue().forEach((temp) -> {
+                        if (!test.containsKey(temp.getProduct())) {
+                            test.put(temp.getProduct(), temp.getAmount());
+                        } else {
+                            test.put(temp.getProduct(), test.get(temp.getProduct()) + temp.getAmount());
+                        }
+
+                    }
+            );
+            Map<Product, Integer> test2;
+            test2 = test.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                    .collect(toMap(
+                            Map.Entry::getKey, Map.Entry::getValue, (e2, e1) -> e1,
+                            LinkedHashMap::new)
+                    );
+            if (test2.keySet().stream().findFirst().isPresent()) {
+                mostBought.put(blah.getKey(), test2.keySet().stream().findFirst().get());
+            }
+            test.clear();
+        }
+
         return mostBought;
+    }
+
+    private Map<?, ?> sortedMap(Map<?, ?> unsortedMap) {
+        return unsortedMap;
     }
 
 
@@ -186,12 +203,12 @@ public class Supermarket {
 
         // all customers have been handled;
         // cashiers finish their work until closing time + some overtime
-        final int overtime = 15*60;
+        final int overtime = 15 * 60;
         for (Cashier c : this.cashiers) {
             c.doTheWorkUntil(this.closingTime.plusSeconds(overtime));
             // remove the overtime from the current time and the idle time of the cashier
             c.setCurrentTime(c.getCurrentTime().minusSeconds(overtime));
-            c.setTotalIdleTime(c.getTotalIdleTime()-overtime);
+            c.setTotalIdleTime(c.getTotalIdleTime() - overtime);
         }
     }
 
@@ -303,7 +320,7 @@ public class Supermarket {
     public void addRandomCustomers(int nCustomers, int averageNrItems) {
         if (!(this.products instanceof Collection) ||
                 !(this.customers instanceof Collection)
-        )   return;
+        ) return;
 
         // copy the product to an array for easy random selection
         Product[] prods = new Product[this.products.size()];
