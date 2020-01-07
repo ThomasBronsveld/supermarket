@@ -22,11 +22,16 @@ public class FIFOCashier extends Cashier {
         return 0;
     }
 
+    public Customer getServingCustomer() {
+        return servingCustomer;
+    }
+
     @Override
     public int expectedWaitingTime(Customer customer) {
         int amount = 0;
         //There is a serving customer & the queue is not 0.
         if (this.waitingQueue.size() != 0) {
+            System.out.println("Eerste");
             for (Customer c : waitingQueue
             ) {
                 amount += expectedCheckOutTime(c.getNumberOfItems());
@@ -37,6 +42,7 @@ public class FIFOCashier extends Cashier {
         }
         //This condition goes if both the waiting queue is 0 and the cashier is serving a customer.
         if (this.waitingQueue.size() == 0 && this.servingCustomer != null) {
+            System.out.println("dwdwadwawdwd");
             amount = this.expectedCheckOutTime(this.servingCustomer.getNumberOfItems()) - this.getCurrentTime().getSecond();
         }
 
@@ -55,16 +61,20 @@ public class FIFOCashier extends Cashier {
         //if the queue is empty, take a break
         //else go to the next customer from the queue and go through this process again
         //else it means time = T (???)
-
+        System.out.println(this.currentTime);
         while (this.currentTime.isBefore(targetTime)) {
             if (this.waitingQueue.isEmpty()) {
                 if (this.servingCustomer == null) {
                     this.setTotalIdleTime(this.getTotalIdleTime() + (int) ChronoUnit.SECONDS.between(this.getCurrentTime(), targetTime));
                 }
-            } else {
+            } else if(this.servingCustomer != null) {
+                this.currentTime = targetTime;
+
+            }
+            else {
                 this.servingCustomer = waitingQueue.peek();
                 this.waitingQueue.remove(this.waitingQueue.peek());
-                this.setCurrentTime(this.getCurrentTime().plusSeconds(this.expectedCheckOutTime(this.servingCustomer.getNumberOfItems())));
+                this.currentTime = targetTime;
                 continue;
             }
             this.setCurrentTime(targetTime);
