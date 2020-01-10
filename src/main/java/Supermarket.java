@@ -188,6 +188,7 @@ public class Supermarket {
         // TODO: get the first customer from the shoppingQueue;
         Customer nextCustomer = shoppingQueue.poll();
 
+
         while (nextCustomer != null) {
             // let all cashiers finish up their work before the given arrival time of the customer
             for (Cashier c : this.cashiers) {
