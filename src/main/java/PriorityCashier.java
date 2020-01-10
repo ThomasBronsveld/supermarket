@@ -17,16 +17,18 @@ public class PriorityCashier extends FIFOCashier {
     @Override
     public int expectedWaitingTime(Customer customer) {
 
-
         int amount = 0;
         Queue<Customer> holdingQeue = new LinkedList<>(this.waitingQueue);
 
+        //Klant probeert te kijken naar hoe lang hij erover zal doen.
+
+        //Check of hij gelijk of minder dan 5 items heeft.
+        //Zo ja,
         if(this.getServingCustomer() != null) {
             this.servingCustomer = this.getServingCustomer();
             amount = this.servingCustomer.getActualCheckOutTime();
         }
 
-        System.out.println(amount);
         //There is a serving customer & the queue is not 0.
         if (holdingQeue.size() != 0) {
             if(customer.getNumberOfItems() <= MAX_NUM_PRIORITY_ITEMS) {

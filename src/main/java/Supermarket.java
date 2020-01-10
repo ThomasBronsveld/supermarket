@@ -61,15 +61,40 @@ public class Supermarket {
         System.out.printf("%d customers have shopped %d items out of %d different products\n",
                 this.customers.size(), this.getTotalNumberOfItems(), this.products.size());
 
-        System.out.printf("Revenues and most bought product per zip-code:");
+        System.out.printf("Revenues and most bought product per zip-code:\n");
         Map<String, Double> revenues = this.revenueByZipCode();
         Map<String, Product> populars = this.mostBoughtProductByZipCode();
 
         double totalRevenue = 0.0;
+
         // TODO: display the calculated revenues and most bought products.
-        // TODO: calculate the total revenue.
-        System.out.println("revenues: " + revenues);
-        System.out.println("populars: " + populars);
+//        System.out.println("revenues: " + revenues);
+//        System.out.println("populars: " + populars);
+
+        Map<String, Double> treemap = new TreeMap<>(revenues);
+        Map<String, Product> treemap2 = new TreeMap<>(populars);
+
+        List zipCodes = new LinkedList<String>();
+        List revenue = new LinkedList<Double>();
+        List product = new LinkedList<String>();
+
+        for (Map.Entry<String, Double> stringDoubleEntry : treemap.entrySet()) {
+            Map.Entry pair = stringDoubleEntry;
+            zipCodes.add(pair.getKey());
+            revenue.add(pair.getValue());
+        }
+
+        for (Map.Entry<String, Product> stringDoubleEntry : treemap2.entrySet()) {
+            Map.Entry pair = stringDoubleEntry;
+            product.add(pair.getValue());
+        }
+
+
+
+        for (Map.Entry<String, Double> stringDoubleEntry : revenues.entrySet()) {
+            Map.Entry pair = stringDoubleEntry;
+            totalRevenue += (double) pair.getValue();
+        }
 
         System.out.printf("\nTotal Revenue=%.2f\n", totalRevenue);
     }
@@ -83,6 +108,7 @@ public class Supermarket {
         System.out.printf("Cashiers:     n-customers:  avg-wait-time: max-wait-time: max-queue-length: avg-check-out-time: idle-time:\n");
         // TODO: report simulation results per cashier:
         //  a) number of customers
+
         //  b) average waiting time per customer
         //  c) maximum waiting time by any customer at the given cashier
         //  d) maximum queue length of waiting customers including the customer being served

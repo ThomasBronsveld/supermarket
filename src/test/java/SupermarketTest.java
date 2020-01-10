@@ -85,7 +85,6 @@ class SupermarketTest {
     void t061_oneFIFOCashierSimulation() {
         t060_oneCashierSimulation(this.supermarket1, this.fifoCashier1, 260, 1);
         t060_oneCashierSimulation(this.supermarket2, this.fifoCashier1, 254, 2);
-        System.out.println("Wij gaan nu de 4 queue zoeken");
         t060_oneCashierSimulation(this.supermarket5, this.fifoCashier1, 150, 4);
     }
 
