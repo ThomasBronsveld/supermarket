@@ -38,6 +38,7 @@ public abstract class Cashier {
         this.currentTime = currentTime;
         this.totalIdleTime = 0;
         this.maxQueueLength = 0;
+
         // TODO: you may need to override this method in sub-classes
     }
 
