@@ -15,6 +15,11 @@ public abstract class Cashier {
     protected Queue<Customer> waitingQueue; // queue of waiting customers
     protected LocalTime currentTime;        // tracks time for the cashier during simulation
     protected int totalIdleTime;            // tracks cumulative seconds when there was no work for the cashier
+
+    public void setMaxQueueLength(int maxQueueLength) {
+        this.maxQueueLength = maxQueueLength;
+    }
+
     protected int maxQueueLength;           // tracks the maximum number of customers at the cashier at any time
             // during simulation. Includes both waiting customers and the customer being served
 
@@ -74,8 +79,10 @@ public abstract class Cashier {
      */
     public void add(Customer customer) {
         // TODO add the customer to the queue of the cashier (if check-out is required)
-        waitingQueue.add(customer);
-        maxQueueLength += 1;
+        if(customer.getNumberOfItems() > 0){
+            waitingQueue.add(customer);
+        }
+
     }
 
     // TODO implement relevant overrides and/or local classes to be able to
