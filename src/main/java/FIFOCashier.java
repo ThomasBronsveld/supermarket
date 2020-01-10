@@ -28,21 +28,23 @@ public class FIFOCashier extends Cashier {
 
     @Override
     public int expectedWaitingTime(Customer customer) {
-        int amount = 0;
+
+        int amount;
+        if(this.servingCustomer == null) {
+            amount = 0;
+        } else {
+            amount = this.servingCustomer.getActualCheckOutTime();
+        }
         //There is a serving customer & the queue is not 0.
         if (this.waitingQueue.size() != 0) {
-            System.out.println("Eerste");
+
             for (Customer c : waitingQueue
             ) {
                 amount += expectedCheckOutTime(c.getNumberOfItems());
             }
-            if (this.servingCustomer != null) {
-                amount += this.expectedCheckOutTime(this.servingCustomer.getNumberOfItems()) - this.getCurrentTime().getSecond();
-            }
         }
         //This condition goes if both the waiting queue is 0 and the cashier is serving a customer.
         if (this.waitingQueue.size() == 0 && this.servingCustomer != null) {
-            System.out.println("dwdwadwawdwd");
             amount = this.expectedCheckOutTime(this.servingCustomer.getNumberOfItems()) - this.getCurrentTime().getSecond();
         }
 
@@ -71,21 +73,36 @@ public class FIFOCashier extends Cashier {
 
         while (this.currentTime.isBefore(targetTime)) {
 
+            /*  Voor de 4 queue:
+             *  Cashier first does nothing.
+             *  Customer gets added to the Queue
+             *  Because the first customer takes
+             * //Beginnen 12:00:18 //Zodra deze bijna klaar is, is de queue lengte 4.
+                //deze klant doet er 36 seconden over. 12:00:54
+                //2de klant 12:00:28 //Zodra deze aan de beurt is, is de lengte 3.
+                //Deze klant 30 seconden. 12:01:24
+                //3de klant 12:00:32 // Zodra deze aan de beurt is, is de lengte 2.
+                //Deze klant doet er 26 seconden over. 12:01:50
+                //4de klant 12:00:39 //Zodra deze aan de beurt is, is de lengte 1.
+                // Deze klant doet er 22 seconden over. 12:02:12
+                //5de klant 12:01:51 //Zodra deze joint is de lengte 2.
+                c.doTheWorkUntil(nextCustomer.getQueuedAt());
+                //Customer@400cff1a klant 1.
+             *
+             */
             //check altijd de waitingQueue length.
-            System.out.println("Lengte queue: " + this.waitingQueue.size());
+
             if(this.servingCustomer != null) {
+                System.out.println("test");
+                System.out.println(this.waitingQueue.size());
+                System.out.println(maxQueueLength);
                 if(maxQueueLength < this.waitingQueue.size() + 1) {
                     maxQueueLength = this.waitingQueue.size() + 1;
                 }
             } else if(maxQueueLength < this.waitingQueue.size()) {
+                System.out.println("test2");
                 maxQueueLength = this.waitingQueue.size();
             }
-//            if(this.servingCustomer != null || !this.waitingQueue.isEmpty()) {
-//                System.out.println("hiertje");
-//                if(this.maxQueueLength < this.waitingQueue.size()) {
-//                    this.maxQueueLength = this.waitingQueue.size();
-//                }
-//            }
 
             //continue checkout of serving customer
             //if any servingCustomer = DONE
@@ -93,7 +110,6 @@ public class FIFOCashier extends Cashier {
             //Check if the actual checkout time is shorter than expected checkout time. This is done so that we know we need to continue with the serving customer.
             //Otherwise we need to start serving this customer.
             if (this.servingCustomer != null && this.servingCustomer.getActualCheckOutTime() < this.expectedCheckOutTime(this.servingCustomer.getNumberOfItems())) {
-                System.out.println("lol");
 
                 //If we finish the checkout of current serving customer.
                 if(this.currentTime.plusSeconds(this.servingCustomer.getActualCheckOutTime()).isBefore(targetTime)) {
@@ -104,15 +120,14 @@ public class FIFOCashier extends Cashier {
 
                 //continue the checkout of current serving customer
                 //Set actual checkout Time minus the difference between target Time and currentTime.
-                this.servingCustomer.setActualCheckOutTime(this.servingCustomer.getActualCheckOutTime() - (int) ChronoUnit.SECONDS.between(targetTime, this.currentTime));
+
+                this.servingCustomer.setActualCheckOutTime(this.servingCustomer.getActualCheckOutTime() - (int) ChronoUnit.SECONDS.between(this.currentTime, targetTime));
                 this.currentTime = targetTime;
                 break;
 
                 //start serving new customer
             } else if(this.servingCustomer != null) {
-                System.out.println("eyooyooy");
-                //Set the expected checkout time.
-                this.servingCustomer.setActualCheckOutTime(this.expectedCheckOutTime(this.servingCustomer.getNumberOfItems()));
+
 
                 //If we can finish checking the customer out in a single rotation.
                 if(this.currentTime.plusSeconds(this.servingCustomer.getActualCheckOutTime()).isBefore(targetTime)) {
@@ -123,23 +138,20 @@ public class FIFOCashier extends Cashier {
 
                 //We can't finish checking the customer out before targetTime. Reduce the checkout time to know
                 //how many seconds we have left checking the customers items out.
-                this.servingCustomer.setActualCheckOutTime((int) ChronoUnit.SECONDS.between(targetTime, this.currentTime));
+                this.servingCustomer.setActualCheckOutTime(this.servingCustomer.getActualCheckOutTime() - (int) ChronoUnit.SECONDS.between(this.currentTime, targetTime));
                 this.currentTime = targetTime;
             }
 
 
             //check if we need to get new customer.
             if(this.servingCustomer == null) {
-                System.out.println("lul");
                 //If the queue is empty as well we add idle time, otherwise get new customer.
                 if(this.waitingQueue.isEmpty()){
-                    System.out.println("testerino");
                     this.setTotalIdleTime(this.getTotalIdleTime() + (int) ChronoUnit.SECONDS.between(this.getCurrentTime(), targetTime));
                     this.currentTime = targetTime;
                     continue;
                 }
                 //Pick new customer
-                System.out.println("Hierzo??");
                 this.servingCustomer = this.waitingQueue.poll();
                 //Set the checkoutTime so that we can keep track of the progress.
                 this.servingCustomer.setActualCheckOutTime(this.expectedCheckOutTime(this.servingCustomer.getNumberOfItems()));

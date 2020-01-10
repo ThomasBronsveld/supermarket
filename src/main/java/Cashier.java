@@ -82,7 +82,6 @@ public abstract class Cashier {
         if(customer.getNumberOfItems() > 0){
             waitingQueue.add(customer);
         }
-
     }
 
     // TODO implement relevant overrides and/or local classes to be able to
