@@ -171,11 +171,10 @@ public class Supermarket {
      * simulate the cashiers while handling all customers that enter their queues
      */
     public void simulateCashiers() {
+        Queue<Customer> shoppingQueue = null;
 
         // TODO: create an appropriate data structure for the shoppingQueue
         //  and add all customers in the supermarket
-        Queue<Customer> shoppingQueue = new LinkedList<Customer>(customers);
-
 
         // all cashiers restart at open time
         for (Cashier c : this.cashiers) {
@@ -186,22 +185,13 @@ public class Supermarket {
         // and redirect them to the cashier of their choice
 
         // TODO: get the first customer from the shoppingQueue;
-        Customer nextCustomer = shoppingQueue.poll();
+        Customer nextCustomer = null;
 
         while (nextCustomer != null) {
+
             // let all cashiers finish up their work before the given arrival time of the customer
             for (Cashier c : this.cashiers) {
-                //Beginnen 12:00:18 //Zodra deze bijna klaar is, is de queue lengte 4.
-                //deze klant doet er 36 seconden over. 12:00:54
-                //2de klant 12:00:28 //Zodra deze aan de beurt is, is de lengte 3.
-                //Deze klant 30 seconden. 12:01:24
-                //3de klant 12:00:32 // Zodra deze aan de beurt is, is de lengte 2.
-                //Deze klant doet er 26 seconden over. 12:01:50
-                //4de klant 12:00:39 //Zodra deze aan de beurt is, is de lengte 1.
-                // Deze klant doet er 22 seconden over. 12:02:12
-                //5de klant 12:01:51 //Zodra deze joint is de lengte 2.
                 c.doTheWorkUntil(nextCustomer.getQueuedAt());
-                //Customer@400cff1a klant 1.
             }
             // ask the customer about his preferred cashier for the check-out
             Cashier selectedCashier = nextCustomer.selectCashier(this.cashiers);
@@ -209,7 +199,6 @@ public class Supermarket {
             selectedCashier.add(nextCustomer);
 
             // TODO: next customer is arriving, get the next customer from the shoppingQueue
-            nextCustomer = shoppingQueue.poll();
         }
 
         // all customers have been handled;
